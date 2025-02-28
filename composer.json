@@ -1,6 +1,6 @@
 {
     "name": "codewiser/casts",
-    "description": "Struct casting for Laravel",
+    "description": "A set of casts for Laravel",
     "type": "library",
     "license": "MIT",
     "autoload": {
