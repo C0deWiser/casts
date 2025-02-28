@@ -1,6 +1,8 @@
+# Custom Casts
+
 ## Structures
 
-Structure is an `array` or `json` attributes with structured interface.
+Structure is an `array` or `json` attribute with structured interface.
 
 For example:
 
@@ -51,6 +53,12 @@ class User extends Model
 }
 ```
 
+Now, the IDE you are using may suggest structure attributes:
+
+```php
+$user->name->first_name;
+```
+
 You can make it not-nullable:
 
 ```php
@@ -70,6 +78,8 @@ class User extends Model
     }    
 }
 ```
+
+> Note that structures way be nested.
 
 ## Structure collections
 
@@ -95,4 +105,57 @@ class User extends Model
         ];
     }    
 }
+```
+
+## Date-time with timezone
+
+Laravel doesn't respect timezone. 
+Cast `\Codewiser\Casts\AsDatetimeWithTZ` fixes this behaviour.
+
+### Before
+
+```php
+class Article extends \Illuminate\Database\Eloquent\Model
+{
+    protected $casts = [
+        'date' => 'datetime'
+    ];
+}
+```
+
+```php
+// e.g. Laravel has Europe/London (+01:00) timezone
+config()->set('app.timezone', 'Europe/London');
+
+$model = new Article();
+
+$model->date = '2000-01-01T10:00:00+02:00';
+
+echo $model->date->format('c');
+// Expecting 2000-01-01T09:00:00+01:00
+// Actual    2000-01-01T10:00:00+01:00
+```
+
+### After
+
+```php
+class Article extends \Illuminate\Database\Eloquent\Model
+{
+    protected $casts = [
+        'date' => \Codewiser\Casts\AsDatetimeWithTZ::class
+    ];
+}
+```
+
+```php
+// e.g. Laravel has Europe/London (+01:00) timezone
+config()->set('app.timezone', 'Europe/London');
+
+$model = new Article();
+
+$model->date = '2000-01-01T10:00:00+02:00';
+
+echo $model->date->format('c');
+// Expecting 2000-01-01T09:00:00+01:00
+// Actual    2000-01-01T09:00:00+01:00
 ```
