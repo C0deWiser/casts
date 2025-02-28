@@ -1,0 +1,22 @@
+{
+    "name": "codewiser/casts",
+    "description": "Struct casting for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Codewiser\\Casts\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "pm",
+            "email": "pm@101media.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": ">=10.0"
+    }
+}
