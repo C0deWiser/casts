@@ -2,7 +2,7 @@
 
 ## Structures
 
-Structure is an `array` or `json` attribute with structured interface.
+Structure is an `array` or `json` attribute cast to an object.
 
 For example:
 
@@ -12,16 +12,16 @@ use Illuminate\Database\Eloquent\Casts\AsStringable;
 use Illuminate\Support\Stringable;
 
 /**
- * @property null|Stringable $first_name
- * @property null|Stringable $second_name
- * @property null|Stringable $family_name
+ * @property  null|Stringable  $first_name
+ * @property  null|Stringable  $second_name
+ * @property  null|Stringable  $family_name
  */
 class Username extends Pivot
 {
     protected function casts(): array
     {
         return [
-            'first_name' => AsStringable::class,
+            'first_name'  => AsStringable::class,
             'second_name' => AsStringable::class,
             'family_name' => AsStringable::class,
         ];   
@@ -59,7 +59,8 @@ Now, the IDE you are using may suggest structure attributes:
 $user->name->first_name;
 ```
 
-You can make it not-nullable:
+You can make it non-nullable. It means that `name` attribute will always be an 
+object, even if empty.
 
 ```php
 use Codewiser\Casts\AsStruct;
@@ -73,35 +74,35 @@ class User extends Model
     protected function casts(): array
     {
         return [
-            'name' => AsStruct::using(Username::class, required: true)
+            'name' => AsStruct::using(Username::class, nullable: false)
         ];
     }    
 }
 ```
 
-> Note that structures way be nested.
+> Structures may be nested.
 
 ## Structure collections
 
-The same way, you may cast collections of custom structs:
+The same way you may cast collections of custom structs:
 
 ```php
-use Codewiser\Casts\AsStructCollection;
+use Codewiser\Casts\AsStruct;
 use Illuminate\Support\Collection;
 
 /**
- * @property null|Collection<Contact> $contacts_1
- * @property null|ContactCollection<Contact> $contacts_2
- * @property Collection<Contact> $contacts_3
+ * @property null|Collection<int,Contact> $contacts_1
+ * @property null|ContactCollection<int,Contact> $contacts_2
+ * @property Collection<int,Contact> $contacts_3
  */
 class User extends Model
 {
     protected function casts(): array
     {
         return [
-            'contacts_1' => AsStructCollection::using(Contact::class),
-            'contacts_2' => AsStructCollection::using(ContactCollection::class, Contact::class),
-            'contacts_3' => AsStructCollection::using(Contact::class, required: true),
+            'contacts_1' => AsStruct::collection(Contact::class),
+            'contacts_2' => AsStruct::collection(ContactCollection::class, Contact::class),
+            'contacts_3' => AsStruct::collection(Contact::class, nullable: false),
         ];
     }    
 }

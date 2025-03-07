@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Collection;
 
 class AsStruct implements Castable
 {
@@ -49,17 +50,31 @@ class AsStruct implements Castable
      * Specify the class for the cast.
      *
      * @param  class-string<Pivot>  $struct
-     * @param  bool  $required
+     * @param  bool  $nullable
      *
      * @return string
      */
-    public static function using(string $struct, bool $required = false): string
+    public static function using(string $struct, bool $nullable = true): string
     {
         $args = [
             $struct,
-            $required ? 'required' : 'nullable',
+            $nullable ? 'nullable' : 'required',
         ];
 
         return static::class.':'.implode(',', $args);
+    }
+
+    /**
+     * Specify the collection and/or model for the cast.
+     *
+     * @param  class-string<Collection|Pivot>  $class
+     * @param  null|class-string<Pivot>  $struct
+     * @param  bool  $nullable
+     *
+     * @return string
+     */
+    public static function collection(string $class, string $struct = null, bool $nullable = true): string
+    {
+        return AsStructCollection::using($class, $struct, $nullable);
     }
 }

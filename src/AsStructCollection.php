@@ -62,16 +62,16 @@ class AsStructCollection implements Castable
      *
      * @param  class-string<Collection|Pivot>  $class
      * @param  null|class-string<Pivot>  $struct
-     * @param  bool  $required
+     * @param  bool  $nullable
      *
      * @return string
      */
-    public static function using(string $class, string $struct = null, bool $required = false): string
+    public static function using(string $class, string $struct = null, bool $nullable = true): string
     {
         $args = [
             $class,
             $struct,
-            $required ? 'required' : 'nullable',
+            $nullable ? 'nullable' : 'required',
         ];
 
         return static::class.':'.implode(',', array_filter($args));
