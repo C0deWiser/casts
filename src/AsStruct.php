@@ -10,6 +10,61 @@ use Illuminate\Support\Collection;
 
 class AsStruct implements Castable
 {
+    protected array $arguments = [];
+
+    /**
+     * Specify the class for the cast.
+     *
+     * @param  class-string<Pivot>  $class
+     */
+    public static function using(string $class): static
+    {
+        return new static($class);
+    }
+
+    /**
+     * Specify the collection and/or model for the cast.
+     *
+     * @param  class-string<Pivot>  $class
+     * @param  null|class-string<Collection>  $collection
+     */
+    public static function list(string $class, string $collection = null): AsStructCollection
+    {
+        return new AsStructCollection($class, $collection);
+    }
+
+    /**
+     * @param  class-string<Pivot>  $class
+     */
+    public function __construct(string $class)
+    {
+        $this->arguments = [$class];
+    }
+
+    protected function cast(): string
+    {
+        return static::class.':'.implode(',', $this->arguments);
+    }
+
+    public function __toString(): string
+    {
+        return $this->cast();
+    }
+
+    public function required(): string
+    {
+        $this->arguments[] = 'required';
+
+        return $this->cast();
+    }
+
+    public function nullable(): string
+    {
+        $this->arguments = array_filter($this->arguments, fn($item) => $item !== 'required');
+
+        return $this->cast();
+    }
+
     public static function castUsing(array $arguments): CastsAttributes
     {
         return new class($arguments) implements CastsAttributes {
@@ -44,37 +99,5 @@ class AsStruct implements Castable
                 return Json::encode($value);
             }
         };
-    }
-
-    /**
-     * Specify the class for the cast.
-     *
-     * @param  class-string<Pivot>  $struct
-     * @param  bool  $nullable
-     *
-     * @return string
-     */
-    public static function using(string $struct, bool $nullable = true): string
-    {
-        $args = [
-            $struct,
-            $nullable ? 'nullable' : 'required',
-        ];
-
-        return static::class.':'.implode(',', $args);
-    }
-
-    /**
-     * Specify the collection and/or model for the cast.
-     *
-     * @param  class-string<Collection|Pivot>  $class
-     * @param  null|class-string<Pivot>  $struct
-     * @param  bool  $nullable
-     *
-     * @return string
-     */
-    public static function collection(string $class, string $struct = null, bool $nullable = true): string
-    {
-        return AsStructCollection::using($class, $struct, $nullable);
     }
 }

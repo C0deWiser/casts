@@ -47,7 +47,7 @@ class User extends Model
     protected function casts(): array
     {
         return [
-            'name' => AsStruct::using(Username::class)
+            'name' => AsStruct::using(Username::class)->nullable()
         ];
     }    
 }
@@ -74,9 +74,9 @@ class User extends Model
     protected function casts(): array
     {
         return [
-            'name' => AsStruct::using(Username::class, nullable: false)
+            'name' => AsStruct::using(Username::class)->required()
         ];
-    }    
+    }
 }
 ```
 
@@ -91,8 +91,8 @@ use Codewiser\Casts\AsStruct;
 use Illuminate\Support\Collection;
 
 /**
- * @property null|Collection<int,Contact> $contacts_1
- * @property null|ContactCollection<int,Contact> $contacts_2
+ * @property null|ContactCollection<int,Contact> $contacts_1
+ * @property null|Collection<int,Contact> $contacts_2
  * @property Collection<int,Contact> $contacts_3
  */
 class User extends Model
@@ -100,11 +100,11 @@ class User extends Model
     protected function casts(): array
     {
         return [
-            'contacts_1' => AsStruct::collection(Contact::class),
-            'contacts_2' => AsStruct::collection(ContactCollection::class, Contact::class),
-            'contacts_3' => AsStruct::collection(Contact::class, nullable: false),
+            'contacts_1' => AsStruct::list(Contact::class, ContactCollection::class)->nullable(),
+            'contacts_2' => AsStruct::list(Contact::class)->nullable(),
+            'contacts_3' => AsStruct::list(Contact::class)->required(),
         ];
-    }    
+    }
 }
 ```
 
