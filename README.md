@@ -100,9 +100,9 @@ class User extends Model
     protected function casts(): array
     {
         return [
-            'contacts_1' => AsStruct::list(Contact::class, ContactCollection::class)->nullable(),
-            'contacts_2' => AsStruct::list(Contact::class)->nullable(),
-            'contacts_3' => AsStruct::list(Contact::class)->required(),
+            'contacts_1' => AsStruct::collects(Contact::class, ContactCollection::class)->nullable(),
+            'contacts_2' => AsStruct::collects(Contact::class)->nullable(),
+            'contacts_3' => AsStruct::collects(Contact::class)->required(),
         ];
     }
 }

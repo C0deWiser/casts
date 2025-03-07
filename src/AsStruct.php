@@ -28,7 +28,7 @@ class AsStruct implements Castable
      * @param  class-string<Pivot>  $class
      * @param  null|class-string<Collection>  $collection
      */
-    public static function list(string $class, string $collection = null): AsStructCollection
+    public static function collects(string $class, string $collection = null): AsStructCollection
     {
         return new AsStructCollection($class, $collection);
     }

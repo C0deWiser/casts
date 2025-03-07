@@ -32,7 +32,7 @@ class AsStructTest extends TestCase
 
         $this->assertEquals(
             AsStructCollection::class.':'.FooBarStruct::class,
-            AsStruct::list(FooBarStruct::class)->nullable()
+            AsStruct::collects(FooBarStruct::class)->nullable()
         );
 
         $this->assertEquals(
@@ -47,14 +47,14 @@ class AsStructTest extends TestCase
 
         $this->assertEquals(
             AsStructCollection::class.':'.FooBarStruct::class.','.FooBarCollection::class,
-            AsStruct::list(FooBarStruct::class)->with(FooBarCollection::class)->nullable()
+            AsStruct::collects(FooBarStruct::class)->with(FooBarCollection::class)->nullable()
         );
 
 
 
         $this->assertEquals(
             AsStructCollection::class.':'.FooBarStruct::class.','.FooBarCollection::class,
-            AsStruct::list(FooBarStruct::class)
+            AsStruct::collects(FooBarStruct::class)
                 ->with(Collection::class)
                 ->with(FooBarCollection::class)
                 ->nullable()
@@ -69,7 +69,7 @@ class AsStructTest extends TestCase
 
         $this->assertEquals(
             AsStructCollection::class.':'.FooBarStruct::class.',required',
-            AsStruct::list(FooBarStruct::class)->required()
+            AsStruct::collects(FooBarStruct::class)->required()
         );
 
         $this->assertEquals(
@@ -84,7 +84,7 @@ class AsStructTest extends TestCase
 
         $this->assertEquals(
             AsStructCollection::class.':'.FooBarStruct::class.','.FooBarCollection::class.',required',
-            AsStruct::list(FooBarStruct::class)->with(FooBarCollection::class)->required()
+            AsStruct::collects(FooBarStruct::class)->with(FooBarCollection::class)->required()
         );
     }
 
