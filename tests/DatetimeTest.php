@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Support\Carbon;
 use PHPUnit\Framework\TestCase;
+use Stubs\Entity;
 
 class DatetimeTest extends TestCase
 {

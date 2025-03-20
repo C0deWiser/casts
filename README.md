@@ -160,3 +160,81 @@ echo $model->date->format('c');
 // Expecting 2000-01-01T09:00:00+01:00
 // Actual    2000-01-01T09:00:00+01:00
 ```
+
+## Request morph validator
+
+### Before
+
+```php
+use Illuminate\Database\Eloquent\Relations\Relation;
+
+class MyRequest extends FormRequest 
+{
+    public function rules(): array 
+    {
+        return [
+            'commentable_type' => 'required|string',
+            'commentable_id'   => 'required',
+        ];
+    }
+    
+    public function getCommentable(): Model 
+    {
+        $class = Relation::getMorphedModel($this->input('commentable_type'));
+        
+        return $class::find($this->integer('commentable_id'));
+    }
+}
+```
+
+### After
+
+```php
+use Codewiser\Requests\HasMorphs;
+use Illuminate\Database\Eloquent\Relations\Relation;
+
+class MyRequest extends FormRequest 
+{
+    use HasMorphs;
+
+    public function rules(): array 
+    {
+        return [
+            ...$this->morph('commentable')
+        ];
+    }
+    
+    public function getCommentable(): Model 
+    {
+        return $this->morphed('commentable');
+    }
+}
+```
+
+Additionally, you may pass list of classes, the morphed model could be.
+
+```php
+use Codewiser\Requests\HasMorphs;
+use Illuminate\Database\Eloquent\Relations\Relation;
+
+class MyRequest extends FormRequest 
+{
+    use HasMorphs;
+
+    public function rules(): array 
+    {
+        return [
+            ...$this->nullableMorph('commentable', [Post::class, Article::class])
+        ];
+    }
+    
+    public function hasCommentable(): bool {
+        return $this->hasMorph('commentable');
+    }
+    
+    public function getCommentable(): ?Model 
+    {
+        return $this->morphed('commentable');
+    }
+}
+```

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Stubs;
 
 use Codewiser\Casts\AsDatetimeWithTZ;
 use Illuminate\Database\Eloquent\Model;
