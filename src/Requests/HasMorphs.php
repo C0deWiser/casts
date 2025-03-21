@@ -26,16 +26,16 @@ trait HasMorphs
      * Validation rules for morphed model.
      *
      * @param  string  $name  Morph (class alias).
-     * @param  string|array|null  $of  Model should be instance of given class(es).
+     * @param  class-string<Model>|array<array-key,class-string<Model>>|null  $of  Model should be instance of given class(es).
      */
     public function morph(string $name, null|string|array $of = null, bool $required = true): array
     {
         $exists = null;
 
         if ($alias = $this->input("{$name}_type")) {
-            $model = Relation::getMorphedModel($alias);
-            if ($model && class_exists($model)) {
-                $model = new $model;
+            $class = Relation::getMorphedModel($alias) ?? $alias;
+            if (class_exists($class)) {
+                $model = new $class;
                 if ($model instanceof Model) {
                     $exists = $model->getTable().','.$model->getKeyName();
                 }
@@ -48,8 +48,6 @@ trait HasMorphs
         if (is_string($of)) {
             $of = [$of];
         }
-        // Morph at least must be a model instance
-        array_unshift($of, Model::class);
 
         $id_rules = [
             $required ? 'required' : 'nullable',
@@ -72,7 +70,7 @@ trait HasMorphs
      * Validation rules for morphed model (nullable).
      *
      * @param  string  $name  Morph (class alias).
-     * @param  string|array|null  $of  Model should be instance of given class(es).
+     * @param  class-string<Model>|array<array-key,class-string<Model>>|null  $of  Model should be instance of given class(es).
      */
     public function nullableMorph(string $name, null|string|array $of = null): array
     {

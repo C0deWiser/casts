@@ -12,33 +12,38 @@ use Illuminate\Validation\Validator;
  */
 class InstanceOfRule implements ValidationRule
 {
-    public function __construct(public string|array $type_of)
+    public array $type_of;
+
+    public function __construct(string|array $type_of)
     {
-        //
+        $this->type_of = is_array($type_of) ? $type_of : [$type_of];
     }
 
     public function validate(string $attribute, mixed $value, \Closure $fail): void
     {
-        $model = Relation::getMorphedModel($value);
+        if (!$value || !$this->type_of) {
+            // Nothing to validate
+            return;
+        }
 
-        $type_of = is_array($this->type_of) ? $this->type_of : [$this->type_of];
+        $model = Relation::getMorphedModel($value) ?? $value;
 
-        if ($model) {
-            $model = new $model;
-
+        if (class_exists($model)) {
             $match = false;
 
-            foreach ($type_of as $classname) {
-                if ($model instanceof $classname) {
+            foreach ($this->type_of as $classname) {
+                if (is_a($model, $classname, true)) {
                     $match = true;
                 }
             }
 
             if (!$match) {
-                $fail(__("The :attribute should be one of :types", [
-                    'types' => implode(', ', $type_of)
+                $fail(__("The :attribute should be one of [:types]", [
+                    'types' => implode(', ', $this->type_of)
                 ]));
             }
+        } else {
+            $fail(__("The :attribute should be a Model class or alias"));
         }
     }
 }
