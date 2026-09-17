@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Collection;
 
+/**
+ * @deprecated use \Codewiser\Casts\AsDto instead.
+ */
 class AsStruct implements Castable
 {
     protected array $arguments = [];

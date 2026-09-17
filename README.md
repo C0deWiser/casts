@@ -1,114 +1,31 @@
 # Custom Casts
 
-## Structures
+## Object Casting
 
-Structure is an `array` or `json` attribute cast to an object.
-
-For example:
-
-```php
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\Casts\AsStringable;
-use Illuminate\Support\Stringable;
-
-/**
- * @property  null|Stringable  $first_name
- * @property  null|Stringable  $second_name
- * @property  null|Stringable  $family_name
- */
-class Username extends Pivot
-{
-    protected function casts(): array
-    {
-        return [
-            'first_name'  => AsStringable::class,
-            'second_name' => AsStringable::class,
-            'family_name' => AsStringable::class,
-        ];   
-    }
-} 
-```
-
-> Note, that it is not a real Model. We use Pivot as it has no key and has 
-> attributes, casts etc. We will never save it. We use it just as structure 
-> interface.
-
-Apply `Username` struct to `User` model:
+Just like Laravel allows to 
+[cast data to a Collection](https://laravel.com/framework/docs/12.x/eloquent-mutators#array-object-and-collection-casting), 
+it allows to cast data into an object.
 
 ```php
-use Codewiser\Casts\AsStruct;
-use Illuminate\Database\Eloquent\Model;
+use App\Collections\OptionCollection;
+use Codewiser\Casts\AsObject;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
 
 /**
- * @property null|Username $name
+ * Get the attributes that should be cast.
+ *
+ * @return array<string, string>
  */
-class User extends Model
+protected function casts(): array
 {
-    protected function casts(): array
-    {
-        return [
-            'name' => AsStruct::using(Username::class)->nullable()
-        ];
-    }    
+    return [
+        'option'  => AsObject::of(Option::class),
+        'options' => AsCollection::using(OptionCollection::class, Option::class),
+    ];
 }
 ```
 
-Now, the IDE you are using may suggest structure attributes:
-
-```php
-$user->name->first_name;
-```
-
-You can make it non-nullable. It means that `name` attribute will always be an 
-object, even if empty.
-
-```php
-use Codewiser\Casts\AsStruct;
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * @property Username $name
- */
-class User extends Model
-{
-    protected function casts(): array
-    {
-        return [
-            'name' => AsStruct::using(Username::class)->required()
-        ];
-    }
-}
-```
-
-> Structures may be nested.
-
-## Structure collections
-
-The same way you may cast collections of custom structs:
-
-```php
-use Codewiser\Casts\AsStruct;
-use Illuminate\Support\Collection;
-
-/**
- * @property null|ContactCollection<int,Contact> $contacts_1
- * @property null|Collection<int,Contact> $contacts_2
- * @property Collection<int,Contact> $contacts_3
- */
-class User extends Model
-{
-    protected function casts(): array
-    {
-        return [
-            'contacts_1' => AsStruct::collects(Contact::class, ContactCollection::class)->nullable(),
-            'contacts_2' => AsStruct::collects(Contact::class)->nullable(),
-            'contacts_3' => AsStruct::collects(Contact::class)->required(),
-        ];
-    }
-}
-```
-
-## Date-time with timezone
+## Date-time with timezone Casting
 
 Laravel doesn't respect timezone. 
 Cast `\Codewiser\Casts\AsDatetimeWithTZ` fixes this behaviour.
@@ -232,7 +149,7 @@ class MyRequest extends FormRequest
         return $this->hasMorph('commentable');
     }
     
-    public function getCommentable(): ?Model 
+    public function getCommentable(): null|Post|Article 
     {
         return $this->morphed('commentable');
     }
