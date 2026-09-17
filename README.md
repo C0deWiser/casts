@@ -1,5 +1,10 @@
 # Custom Casts
 
+- [Object Casting](#object-casting)
+- [Enum Collections](#enum-collections)
+- [Date-time with timezone Casting](#date-time-with-timezone-casting)
+- [Form Request `morph` Validator](#form-request-morph-validator)
+
 ## Object Casting
 
 Just like Laravel allows to 
@@ -111,7 +116,7 @@ echo $model->date->format('c');
 // Actual    2000-01-01T09:00:00+01:00
 ```
 
-## Request morph validator
+## Form Request `morph` Validator
 
 ### Before
 
