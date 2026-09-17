@@ -25,6 +25,39 @@ protected function casts(): array
 }
 ```
 
+## Enum Collections
+
+Laravel provides `AsEnumCollection` to cast array of enum values into a
+collection, but actually it is REDUNDANT. It is more than enough to use 
+`AsCollection:of(Enum:class)`.
+
+Much worse, that base collection can't handle enum values in some cases. For 
+example, `intersect` or `diff` fails, as `array_intersect` doesn't support 
+enums.
+
+This package provides [enum collection](enum-collections.md), where these 
+methods are fixed to work with enums.
+
+You may cast enum collection this way:
+
+```php
+use App\Collections\OptionCollection;
+use Codewiser\Enum\Collection as EnumCollection;
+use Illuminate\Database\Eloquent\Casts\AsCollection;
+
+/**
+ * Get the attributes that should be cast.
+ *
+ * @return array<string, string>
+ */
+protected function casts(): array
+{
+    return [
+        'roles' => AsCollection::using(EnumCollection::class, RoleEnum::class),
+    ];
+}
+```
+
 ## Date-time with timezone Casting
 
 Laravel doesn't respect timezone. 

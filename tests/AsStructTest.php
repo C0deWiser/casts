@@ -4,13 +4,15 @@ namespace Tests;
 
 use Codewiser\Casts\AsStruct;
 use Codewiser\Casts\AsStructCollection;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Collection;
 use PHPUnit\Framework\TestCase;
 use Stubs\FooBarCollection;
 use Stubs\FooBarModel;
 use Stubs\FooBarStruct;
 
+/**
+ * @deprecated
+ */
 class AsStructTest extends TestCase
 {
     public function testAsStructStrings()
