@@ -16,7 +16,6 @@ use Stubs\MapInto;
 use Stubs\Rating;
 use Stubs\Role;
 use Stubs\RoleResource;
-use Stubs\State;
 use Stubs\Status;
 
 class EnumCollectionTest extends TestCase
@@ -530,7 +529,7 @@ class EnumCollectionTest extends TestCase
     {
         $collection = new EnumCollection([Role::Admin, Role::Guest]);
 
-        $this->assertSame([Role::Admin, Role::Guest], $collection->jsonSerialize());
+        $this->assertSame(['admin', 'guest'], $collection->jsonSerialize());
     }
 
     public function testToJson(): void
@@ -1660,9 +1659,9 @@ class EnumCollectionTest extends TestCase
 
     public function testJoin(): void
     {
-        $collection = new EnumCollection(State::cases());
+        $collection = new EnumCollection(Status::cases());
 
-        $this->assertSame('Draft, Published and Archived',
+        $this->assertSame('Active, Inactive and Pending',
             $collection->join(', ', ' and ')
         );
 
@@ -1670,11 +1669,11 @@ class EnumCollectionTest extends TestCase
 
         $this->assertSame('Admin', $collection->join(' and '));
 
-        $collection = new EnumCollection(State::cases());
+        $collection = new EnumCollection(Status::cases());
 
-        $this->assertSame('Draft!, Published! and Archived!',
+        $this->assertSame('Active!, Inactive! and Pending!',
             $collection
-                ->map(fn(State $state) => $state->name.'!')
+                ->map(fn(Status $status) => $status->name.'!')
                 ->join(', ', ' and ')
         );
     }
@@ -1853,11 +1852,11 @@ class EnumCollectionTest extends TestCase
 
         $this->assertSame('three', $result);
 
-        $collection = new EnumCollection(State::cases());
+        $collection = new EnumCollection(Status::cases());
 
         $result = $collection->median();
 
-        $this->assertSame('Draft', $result);
+        $this->assertSame('inactive', $result);
 
     }
 
@@ -2055,229 +2054,4 @@ class EnumCollectionTest extends TestCase
         );
     }
 
-    // ══════════════════ UnitEnum (non-backed) coverage ═════════════════
-
-    public function testUnitEnumIntersectReturnsCommonItems(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $result = $collection->intersect([State::Draft, State::Archived]);
-
-        $this->assertCount(1, $result);
-        $this->assertTrue($result->has(State::Draft));
-    }
-
-    public function testUnitEnumDiffReturnsItemsNotInGiven(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $result = $collection->diff([State::Draft]);
-
-        $this->assertCount(1, $result);
-        $this->assertTrue($result->has(State::Published));
-    }
-
-    public function testUnitEnumMergeAddsNewItems(): void
-    {
-        $collection = new EnumCollection([State::Draft]);
-
-        $result = $collection->merge([State::Published]);
-
-        $this->assertCount(2, $result);
-        $this->assertTrue($result->has(State::Draft));
-        $this->assertTrue($result->has(State::Published));
-    }
-
-    public function testUnitEnumMergeOverwritesExistingByName(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $result = $collection->merge([State::Archived, State::Draft]);
-
-        $this->assertCount(3, $result);
-        $this->assertContains(State::Draft, $result->all());
-        $this->assertContains(State::Archived, $result->all());
-        $this->assertContains(State::Published, $result->all());
-
-        $collection = new EnumCollection([Rating::one, Rating::two]);
-
-        $result = $collection->merge([Rating::two, Rating::three]);
-
-        $this->assertCount(3, $result);
-        $this->assertContains(Rating::one, $result->all());
-        $this->assertContains(Rating::two, $result->all());
-        $this->assertContains(Rating::three, $result->all());
-
-    }
-
-    public function testUnitEnumHasReturnsTrueForExistingItem(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertTrue($collection->has(State::Draft));
-    }
-
-    public function testUnitEnumDoesntHaveReturnsTrueForMissingItem(): void
-    {
-        $collection = new EnumCollection([State::Draft]);
-
-        $this->assertTrue($collection->doesntHave(State::Archived));
-    }
-
-    public function testUnitEnumHasAnyReturnsTrueIfSomeExist(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertTrue($collection->hasAny([State::Draft, State::Archived]));
-    }
-
-    public function testUnitEnumForgetRemovesItems(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published, State::Archived]);
-
-        $result = $collection->forget(State::Published);
-
-        $this->assertCount(2, $result);
-        $this->assertTrue($result->has(State::Draft));
-        $this->assertFalse($result->has(State::Published));
-    }
-
-    public function testUnitEnumToArray(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertSame([State::Draft, State::Published], $collection->toArray());
-    }
-
-    public function testUnitEnumAll(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertSame([State::Draft, State::Published], $collection->all());
-    }
-
-    public function testUnitEnumCount(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published, State::Archived]);
-
-        $this->assertCount(3, $collection);
-    }
-
-    public function testUnitEnumFilter(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published, State::Archived]);
-
-        $result = $collection->filter(fn ($item) => $item === State::Draft);
-
-        $this->assertCount(1, $result);
-        $this->assertSame([State::Draft], $result->values()->all());
-    }
-
-    public function testUnitEnumFirst(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertSame(State::Draft, $collection->first());
-    }
-
-    public function testUnitEnumMap(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $result = $collection->map(fn ($item) => $item->name);
-
-        $this->assertSame(['Draft', 'Published'], $result->all());
-    }
-
-    public function testUnitEnumValues(): void
-    {
-        $collection = new EnumCollection([5 => State::Draft, 9 => State::Published]);
-
-        $this->assertSame([State::Draft, State::Published], $collection->values()->all());
-    }
-
-    public function testUnitEnumKeys(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertSame([0, 1], $collection->keys()->all());
-    }
-
-    public function testUnitEnumContains(): void
-    {
-        /** @var EnumCollection<int, \UnitEnum> $collection */
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertTrue($collection->contains(State::Draft));
-        $this->assertFalse($collection->contains(State::Archived));
-    }
-
-    public function testUnitEnumUnique(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published, State::Draft]);
-
-        $result = $collection->unique();
-
-        $this->assertCount(2, $result);
-    }
-
-    public function testUnitEnumGroupByClosure(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published, State::Archived]);
-
-        /** @var EnumCollection<string, EnumCollection> $result */
-        $result = $collection->groupBy(fn ($item) => str_starts_with($item->name, 'D') ? 'd' : 'other');
-
-        $this->assertCount(2, $result);
-        $this->assertSame(State::Draft, $result->get('d')->first());
-    }
-
-    public function testUnitEnumPluckName(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $this->assertSame(['Draft', 'Published'], $collection->pluck('name')->all());
-    }
-
-    public function testUnitEnumJsonSerialize(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        // jsonSerialize returns the raw enum objects
-        $this->assertSame([State::Draft, State::Published], $collection->jsonSerialize());
-    }
-
-    public function testUnitEnumToJsonFailsForNonBackedEnum(): void
-    {
-        $collection = new EnumCollection([State::Draft]);
-
-        $this->assertFalse($collection->toJson());
-    }
-
-    public function testUnitEnumMergeReturnsStaticType(): void
-    {
-        $collection = new EnumCollection([State::Draft]);
-
-        $result = $collection->merge([State::Published]);
-
-        $this->assertInstanceOf(EnumCollection::class, $result);
-    }
-
-    public function testUnitEnumIntersectReturnsStaticType(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $result = $collection->intersect([State::Draft]);
-
-        $this->assertInstanceOf(EnumCollection::class, $result);
-    }
-
-    public function testUnitEnumDiffReturnsStaticType(): void
-    {
-        $collection = new EnumCollection([State::Draft, State::Published]);
-
-        $result = $collection->diff([State::Draft]);
-
-        $this->assertInstanceOf(EnumCollection::class, $result);
-    }
 }

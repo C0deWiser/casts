@@ -3,16 +3,17 @@
 namespace Codewiser\Collections;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Concerns\InteractsWithDictionary;
 use Illuminate\Support\Collection as BaseCollection;
-use UnitEnum as TValue;
+use BackedEnum as TValue;
 use function Illuminate\Support\enum_value;
 
 /**
  * @template TKey of array-key
  *
- * @template TValue of \UnitEnum
+ * @template TValue of \BackedEnum
  *
  * @extends \Illuminate\Support\Collection<TKey, TValue>
  */
@@ -39,9 +40,6 @@ class EnumCollection extends BaseCollection
             if ($attribute instanceof \BackedEnum) {
                 return $attribute->value;
             }
-            if ($attribute instanceof \UnitEnum) {
-                return $attribute->name;
-            }
 
             throw new \InvalidArgumentException('Model attribute value is an object but does not have a __toString method.');
         }
@@ -62,7 +60,7 @@ class EnumCollection extends BaseCollection
     {
         $result = parent::map($callback);
 
-        return $result->contains(fn($item) => ! $item instanceof \UnitEnum) ? $result->toBase() : $result;
+        return $result->contains(fn($item) => ! $item instanceof \BackedEnum) ? $result->toBase() : $result;
     }
 
     /**
@@ -366,15 +364,11 @@ class EnumCollection extends BaseCollection
      */
     public function median($key = null): string|float|int|null
     {
-        if (is_null($key) && $this->first() instanceof \BackedEnum) {
-            $key = 'value';
-        }
-
-        return parent::median($key ?? 'name');
+        return parent::median($key ?? 'value');
     }
 
     /**
-     * Sort items in ascending order. Unless a callback is given, unit enums are sorted by name, backed enums by value.
+     * Sort items in ascending order. Unless a callback is given, backed enums are sorted by value.
      *
      * @param  (callable(TValue, TValue): int)|null  $callback
      *
@@ -392,7 +386,7 @@ class EnumCollection extends BaseCollection
     }
 
     /**
-     * Sort items in descending order. Unit enums are sorted by name, backed enums by value.
+     * Sort items in descending order. Backed enums are sorted by value.
      *
      * @param  int  $options
      *
@@ -405,6 +399,16 @@ class EnumCollection extends BaseCollection
         uasort($items, fn($a, $b) => $this->getDictionaryKey($b) <=> $this->getDictionaryKey($a));
 
         return new static($items);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array<int, mixed>
+     */
+    public function jsonSerialize(): array
+    {
+        return array_map(fn ($item) => $item->value, $this->items);
     }
 
     /**
@@ -439,8 +443,6 @@ class EnumCollection extends BaseCollection
                 $k = $item;
                 if ($item instanceof \BackedEnum) {
                     $k = $item->value;
-                } elseif ($item instanceof \UnitEnum) {
-                    $k = $item->name;
                 }
                 return $k;
             })

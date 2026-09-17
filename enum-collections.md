@@ -8,7 +8,7 @@
 The `EnumCollection` class extends Laravel's 
 [base collection](https://laravel.com/framework/docs/collections), 
 so it inherits every method used to fluently work with the underlying array 
-of `BackedEnum` / `UnitEnum` cases.
+of `BackedEnum` cases.
 
 ### Enum Collection Conversion
 
@@ -146,13 +146,13 @@ item may use a separate glue string. Items are joined using the enum's name.
 
 ```php
 use Codewiser\Collections\EnumCollection;
-use App\Enums\State;
+use App\Enums\Status;
 
-$states = new EnumCollection([State::Draft, State::Published, State::Archived]);
+$states = new EnumCollection([Status::Active, Status::Inactive, Status::Pending]);
 
 $states->join(', ', ' and ');
 
-// 'Draft, Published and Archived'
+// 'Active, Inactive and Pending'
 ```
 
 <a name="method-merge"></a>
@@ -177,8 +177,7 @@ $roles = $roles->merge([Role::Guest, Status::Pending]);
 #### `sort($callback = null)`
 
 The `sort` method sorts the collection, preserving its keys.
-Explicitly, unit enums are sorted by their `name`, 
-and backed enums are sorted by their `value`.
+Explicitly, enums are sorted by their `value`.
 
 ```php
 use Codewiser\Collections\EnumCollection;
