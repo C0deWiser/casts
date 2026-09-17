@@ -47,7 +47,7 @@ You may cast enum collection this way:
 
 ```php
 use App\Collections\OptionCollection;
-use Codewiser\Enum\Collection as EnumCollection;
+use Codewiser\Collections\EnumCollection;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 
 /**

@@ -5,7 +5,7 @@
 
 ## Introduction
 
-The `Codewiser\Enum\Collection` class extends Laravel's 
+The `EnumCollection` class extends Laravel's 
 [base collection](https://laravel.com/framework/docs/collections), 
 so it inherits every method used to fluently work with the underlying array 
 of `BackedEnum` / `UnitEnum` cases.
@@ -42,10 +42,10 @@ The `diff` method returns all of the enums that are not present in the given
 collection.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin, Role::Guest, Role::Viewer]);
+$roles = new EnumCollection([Role::Admin, Role::Guest, Role::Viewer]);
 
 $roles = $roles->diff([Role::Guest]);
 
@@ -59,10 +59,10 @@ The `doesntHave` method determines if one or more values are missing from
 the collection.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin]);
+$roles = new EnumCollection([Role::Admin]);
 
 $roles->doesntHave([Role::Guest, Role::Viewer]); // true
 
@@ -76,10 +76,10 @@ The `forget` method removes items from the collection **by value**, unlike
 the base collection's `forget` method, which removes items by key.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin, Role::Guest]);
+$roles = new EnumCollection([Role::Admin, Role::Guest]);
 
 $roles->forget(Role::Guest);
 
@@ -94,10 +94,10 @@ Unlike the base collection's `has` method, which checks for the presence of
 a key, this method checks for the presence of a value.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin]);
+$roles = new EnumCollection([Role::Admin]);
 
 $roles->has(Role::Admin); // true
 
@@ -111,10 +111,10 @@ The `hasAny` method determines if any of the given values exist in the
 collection.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin]);
+$roles = new EnumCollection([Role::Admin]);
 
 $roles->hasAny([Role::Admin, Role::Guest]); // true
 
@@ -128,10 +128,10 @@ The `intersect` method returns all of the enums that are also present in the
 given collection.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin, Role::Guest, Role::Viewer]);
+$roles = new EnumCollection([Role::Admin, Role::Guest, Role::Viewer]);
 
 $roles = $roles->intersect([Role::Guest, Role::Viewer]);
 
@@ -145,10 +145,10 @@ The `join` method joins the collection's values with a string. The final
 item may use a separate glue string. Items are joined using the enum's name.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\State;
 
-$states = new Collection([State::Draft, State::Published, State::Archived]);
+$states = new EnumCollection([State::Draft, State::Published, State::Archived]);
 
 $states->join(', ', ' and ');
 
@@ -162,11 +162,11 @@ The `merge` method merges the given items into the collection, skipping any
 enum case that is already present in the collection.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 use App\Enums\Status;
 
-$roles = new Collection([Role::Admin]);
+$roles = new EnumCollection([Role::Admin]);
 
 $roles = $roles->merge([Role::Guest, Status::Pending]);
 
@@ -181,10 +181,10 @@ Explicitly, unit enums are sorted by their `name`,
 and backed enums are sorted by their `value`.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Guest, Role::Admin]);
+$roles = new EnumCollection([Role::Guest, Role::Admin]);
 
 $roles = $roles->sort();
 
@@ -197,10 +197,10 @@ $roles = $roles->sort();
 The `sortDesc` method sorts the collection in the opposite order.
 
 ```php
-use Codewiser\Enum\Collection;
+use Codewiser\Collections\EnumCollection;
 use App\Enums\Role;
 
-$roles = new Collection([Role::Admin, Role::Guest]);
+$roles = new EnumCollection([Role::Admin, Role::Guest]);
 
 $roles = $roles->sortDesc();
 

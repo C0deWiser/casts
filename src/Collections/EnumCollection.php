@@ -1,6 +1,6 @@
 <?php
 
-namespace Codewiser\Enum;
+namespace Codewiser\Collections;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +16,7 @@ use function Illuminate\Support\enum_value;
  *
  * @extends \Illuminate\Support\Collection<TKey, TValue>
  */
-class Collection extends BaseCollection
+class EnumCollection extends BaseCollection
 {
     /**
      * Get a dictionary key attribute - casting it to a string if necessary.

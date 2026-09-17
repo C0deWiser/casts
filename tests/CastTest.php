@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Codewiser\Enum\Collection as EnumCollection;
+use Codewiser\Collections\EnumCollection as EnumCollection;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Foundation\Auth\User;
 use PHPUnit\Framework\TestCase;
