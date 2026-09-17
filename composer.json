@@ -1,31 +1,41 @@
 {
-    "name": "codewiser/casts",
-    "description": "A set of casts for Laravel",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Codewiser\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/",
-            "Stubs\\": "stubs/"
-        }
-    },
-    "authors": [
-        {
-            "name": "pm",
-            "email": "pm@101media.ru"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {
-        "php": "^8.2",
-        "laravel/framework": ">=12.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^11.1"
+  "name": "codewiser/casts",
+  "description": "A set of casts for Laravel",
+  "keywords": [
+    "laravel",
+    "cast",
+    "casting",
+    "datetime-tz",
+    "morph",
+    "validator",
+    "enum-collection",
+    "validation"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Codewiser\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/",
+      "Stubs\\": "stubs/"
+    }
+  },
+  "authors": [
+    {
+      "name": "pm",
+      "email": "pm@101media.ru"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": "^8.2",
+    "laravel/framework": ">=12.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.1"
+  }
 }
