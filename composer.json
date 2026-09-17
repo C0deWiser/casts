@@ -1,6 +1,6 @@
 {
   "name": "codewiser/casts",
-  "description": "A set of casts for Laravel",
+  "description": "Laravel object casting, enum collection, morph validator",
   "keywords": [
     "laravel",
     "cast",
